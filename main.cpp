@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "utility/mathLib.h"
+#include "utility/CanvasInteraction/CanvasInteration.h"
 
 using namespace cv;
 using namespace std;
