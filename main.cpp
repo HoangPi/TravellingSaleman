@@ -8,6 +8,11 @@ using namespace cv;
 using namespace std;
 
 constexpr int radius = 10;
+constexpr int DELETE = 0xff;
+constexpr int BACKSPACE = 0x08;
+constexpr int ESCAPE = 0x1b;
+
+auto const WindowName = "White Screen";
 
 Mat canvas;                // Global canvas
 vector<Point> clickPoints; // Global vector to store clicked points
@@ -23,7 +28,7 @@ void onMouse(int event, int x, int y, int, void *)
         if (InteractivePointIndex != -1)
         {
             circle(canvas, clickPoints[InteractivePointIndex], radius, Scalar(0, 0, 0), FILLED);
-            imshow("White Screen", canvas);
+            imshow(WindowName, canvas);
             InteractivePointIndex = -1;
             return;
         }
@@ -36,7 +41,7 @@ void onMouse(int event, int x, int y, int, void *)
                 {
                     InteractivePointIndex = i;
                     circle(canvas, clickPoints[i], radius, Scalar(127, 127, 127), FILLED);
-                    imshow("White Screen", canvas);
+                    imshow(WindowName, canvas);
                     return;
                 }
             }
@@ -51,7 +56,7 @@ void onMouse(int event, int x, int y, int, void *)
         //     line(canvas, clickPoints[clickPoints.size() - 2], p, Scalar(50, 50, 50), 2);
         // }
 
-        imshow("White Screen", canvas);
+        imshow(WindowName, canvas);
 
         cout << "Stored point: (" << p.x << ", " << p.y << ")\n";
     }
@@ -62,13 +67,30 @@ int main()
     // Create a fixed-size white screen (e.g., 600x400)
     canvas = Mat(400, 600, CV_8UC3, Scalar(255, 255, 255));
 
-    namedWindow("White Screen");
-    setMouseCallback("White Screen", onMouse);
+    namedWindow(WindowName);
+    setMouseCallback(WindowName, onMouse);
 
-    imshow("White Screen", canvas);
+    imshow(WindowName, canvas);
 
     // Wait until user presses a key
-    waitKey(0);
+    while (true)
+    {
+        int key = waitKey(0);
+        if (key == ESCAPE)
+        {
+            break;
+        }
+        if (key == DELETE || key == BACKSPACE)
+        {
+            if (InteractivePointIndex != -1)
+            {
+                circle(canvas, clickPoints[InteractivePointIndex], radius, Scalar(255, 255, 255), FILLED);
+                clickPoints.erase(clickPoints.begin() + InteractivePointIndex);
+                InteractivePointIndex = -1;
+                imshow(WindowName, canvas);
+            }
+        }
+    }
 
     // Print all stored points after exiting
     cout << "\nAll clicked points:\n";
