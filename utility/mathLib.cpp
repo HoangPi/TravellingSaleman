@@ -19,7 +19,17 @@ long long DistanceSquare(Point a, Point b)
     return deltaX * deltaX + deltaY * deltaY;
 }
 
-void GreedySolve(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &result)
+cv::Point PointAtDistance(const cv::Point &a, const cv::Point &b, double n)
+{
+    cv::Point2d dir = b - a;
+    double len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+    if (len == 0)
+        return a; // Avoid division by zero
+    cv::Point2d unit = dir / len;
+    return a + Point(unit * n);
+}
+
+void NearestNeighbor(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &result)
 {
     result.clear();
     result.reserve(vertices.size() - 1);

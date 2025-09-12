@@ -99,12 +99,14 @@ int main()
         else
         {
             vector<WeightedUndirectedEdge> edges;
-            GreedySolve(Vertices, edges);
+            NearestNeighbor(Vertices, edges);
             double totalWeight = 0;
             for (int i = 0; i < edges.size(); i++)
             {
                 waitKey(200);
-                line(canvas, edges[i].v1->p, edges[i].v2->p, Scalar(50, 50, 50), 2);
+                Point start = PointAtDistance(edges[i].v1->p, edges[i].v2->p, radius + 5);
+                Point end = PointAtDistance(edges[i].v2->p, edges[i].v1->p, radius + 5);
+                line(canvas, start, end, Scalar(50, 50, 50), 2);
                 totalWeight += edges[i].GetWeight();
                 imshow(WindowName, canvas);
             }

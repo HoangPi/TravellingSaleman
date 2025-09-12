@@ -9,4 +9,6 @@ using namespace cv;
 
 long long DistanceSquare(Point a, Point b);
 
-void GreedySolve(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &result);
+cv::Point PointAtDistance(const cv::Point& a, const cv::Point& b, double n);
+
+void NearestNeighbor(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &result);
