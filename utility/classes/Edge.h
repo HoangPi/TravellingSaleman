@@ -11,10 +11,10 @@ private:
     double weight;
 
 public:
-    Point p1;
-    Point p2;
+    class Vertex *p1;
+    class Vertex *p2;
 
-    Edge(Point &p1, Point &p2);
+    Edge(class Vertex *p1, class Vertex *p2);
     int DistanceSquare();
     inline double GetWeight() { return this->weight; };
     inline void SetWeight(double w) { this->weight = (w < 0.0f ? 0.0f : w); }

@@ -10,7 +10,7 @@ bool Vertex::CheckNeigborExist(Vertex &v)
 {
     for (auto &&e : this->ConnectedEdges)
     {
-        if(e.p1 == v.p || e.p2 == v.p)
+        if(e.p1->p == v.p || e.p2->p == v.p)
         {
             return true;
         }
@@ -28,6 +28,6 @@ void Vertex::MakeEdge(Vertex &v1, Vertex &v2)
     {
         return;
     }
-    v1.ConnectedEdges.emplace_back(v1, v2);
-    v2.ConnectedEdges.emplace_back(v2, v1);
+    v1.ConnectedEdges.emplace_back(&v1, &v2);
+    v2.ConnectedEdges.emplace_back(&v2, &v1);
 }

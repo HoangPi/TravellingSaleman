@@ -1,8 +1,9 @@
+#include "Vertex.h"
 #include "Edge.h"
 
 #include <math.h>
 
-Edge::Edge(Point &p1, Point &p2)
+Edge::Edge(Vertex *p1, Vertex *p2)
 {
     this->p1 = p1;
     this->p2 = p2;
@@ -11,7 +12,7 @@ Edge::Edge(Point &p1, Point &p2)
 
 int Edge::DistanceSquare()
 {
-    const int deltaX = p1.x - p2.x;
-    const int deltaY = p1.y - p2.y;
+    const int deltaX = p1->p.x - p2->p.x;
+    const int deltaY = p1->p.y - p2->p.y;
     return deltaX * deltaX + deltaY * deltaY;
 }
