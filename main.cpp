@@ -92,6 +92,18 @@ int main()
                 imshow(WindowName, canvas);
             }
         }
+        else
+        {
+            vector<WeightedUndirectedEdge> edges;
+            GreedySolve(Vertices, edges);
+            for (int i = 0; i < edges.size(); i++)
+            {
+                waitKey(200);
+                line(canvas, edges[i].v1->p, edges[i].v2->p, Scalar(50, 50, 50), 2);
+                imshow(WindowName, canvas);
+                cout << edges[i].v1->p << " And " << edges[i].v2->p << endl;
+            }
+        }
     }
 
     // Print all stored points after exiting
