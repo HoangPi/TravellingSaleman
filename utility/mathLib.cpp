@@ -39,10 +39,11 @@ void GreedySolve(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEd
                 if (temp < minDistance)
                 {
                     next = i;
+                    minDistance = temp;
                 }
             }
         }
-        if(next == -1)
+        if (next == -1)
         {
             result.emplace_back(&vertices[current], &vertices[0]);
             return;
@@ -51,4 +52,5 @@ void GreedySolve(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEd
         result.emplace_back(&vertices[current], &vertices[next]);
         current = next;
     }
+    result.emplace_back(&vertices[current], &vertices[0]);
 }
