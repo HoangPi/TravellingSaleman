@@ -3,6 +3,7 @@
 #include <vector>
 #include "utility/mathLib.h"
 #include "utility/CanvasInteraction/CanvasInteraction.h"
+#include "utility/classes/Vertex.h"
 
 using namespace cv;
 using namespace std;
@@ -15,8 +16,8 @@ constexpr int ESCAPE = 0x1b;
 auto const WindowName = "White Screen";
 
 Mat canvas;                // Global canvas
-vector<Point> clickPoints; // Global vector to store clicked points
-int InteractivePointIndex = -1;
+vector<Vertex> Vertices; // Global vector to store clicked points
+int InteractiveVertexIndex = -1;
 
 // Mouse callback function
 void onMouse(int event, int x, int y, int, void *)
@@ -25,28 +26,28 @@ void onMouse(int event, int x, int y, int, void *)
     {
         Point p(x, y);
         auto color = canvas.at<cv::Vec3b>(p);
-        if (InteractivePointIndex != -1)
+        if (InteractiveVertexIndex != -1)
         {
-            circle(canvas, clickPoints[InteractivePointIndex], radius, Scalar(0, 0, 0), FILLED);
+            circle(canvas, Vertices[InteractiveVertexIndex].p, radius, Scalar(0, 0, 0), FILLED);
             imshow(WindowName, canvas);
-            InteractivePointIndex = -1;
+            InteractiveVertexIndex = -1;
             return;
         }
         if (color == cv::Vec3b::zeros())
         {
-            for (int i = 0; i < clickPoints.size(); i++)
+            for (int i = 0; i < Vertices.size(); i++)
             {
                 constexpr int R2 = radius * radius;
-                if (DistanceSquare(clickPoints[i], p) < R2)
+                if (DistanceSquare(Vertices[i].p, p) < R2)
                 {
-                    InteractivePointIndex = i;
-                    circle(canvas, clickPoints[i], radius, Scalar(127, 127, 127), FILLED);
+                    InteractiveVertexIndex = i;
+                    circle(canvas, Vertices[i].p, radius, Scalar(127, 127, 127), FILLED);
                     imshow(WindowName, canvas);
                     return;
                 }
             }
         }
-        clickPoints.push_back(p); // Store the point
+        Vertices.emplace_back(p); // Store the point
 
         // Draw a dark circle at the click position
         circle(canvas, p, radius, Scalar(0, 0, 0), FILLED);
@@ -82,11 +83,11 @@ int main()
         }
         if (key == DELETE || key == BACKSPACE)
         {
-            if (InteractivePointIndex != -1)
+            if (InteractiveVertexIndex != -1)
             {
-                circle(canvas, clickPoints[InteractivePointIndex], radius, Scalar(255, 255, 255), FILLED);
-                clickPoints.erase(clickPoints.begin() + InteractivePointIndex);
-                InteractivePointIndex = -1;
+                circle(canvas, Vertices[InteractiveVertexIndex].p, radius, Scalar(255, 255, 255), FILLED);
+                Vertices.erase(Vertices.begin() + InteractiveVertexIndex);
+                InteractiveVertexIndex = -1;
                 imshow(WindowName, canvas);
             }
         }
@@ -94,9 +95,9 @@ int main()
 
     // Print all stored points after exiting
     cout << "\nAll clicked points:\n";
-    for (const auto &pt : clickPoints)
+    for (const auto &pt : Vertices)
     {
-        cout << "(" << pt.x << ", " << pt.y << ")\n";
+        cout << "(" << pt.p.x << ", " << pt.p.y << ")\n";
     }
 
     return 0;
