@@ -9,5 +9,5 @@ set(
     utility/classes/Vertex.cpp
 )
 
-add_executable(main main.cpp utility/mathLib.cpp utility/CanvasInteraction/CanvasInteraction.cpp)
+add_executable(main ${SOURCES})
 target_link_libraries(main ${OpenCV_LIBS})
