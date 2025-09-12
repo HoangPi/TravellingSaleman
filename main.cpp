@@ -10,13 +10,14 @@ using namespace cv;
 using namespace std;
 
 constexpr int radius = 10;
+constexpr int distance_threshold = 650;
 constexpr int DELETE = 0xff;
 constexpr int BACKSPACE = 0x08;
 constexpr int ESCAPE = 0x1b;
 
 auto const WindowName = "White Screen";
 
-Mat canvas;                // Global canvas
+Mat canvas;              // Global canvas
 vector<Vertex> Vertices; // Global vector to store clicked points
 int InteractiveVertexIndex = -1;
 
@@ -26,6 +27,7 @@ void onMouse(int event, int x, int y, int, void *)
     if (event == EVENT_LBUTTONDOWN)
     {
         Point p(x, y);
+
         auto color = canvas.at<cv::Vec3b>(p);
         if (InteractiveVertexIndex != -1)
         {
@@ -34,18 +36,15 @@ void onMouse(int event, int x, int y, int, void *)
             InteractiveVertexIndex = -1;
             return;
         }
-        if (color == cv::Vec3b::zeros())
+        constexpr int R2 = radius * radius + distance_threshold;
+        for (int i = 0; i < Vertices.size(); i++)
         {
-            for (int i = 0; i < Vertices.size(); i++)
+            if (DistanceSquare(p, Vertices[i].p) < R2)
             {
-                constexpr int R2 = radius * radius;
-                if (DistanceSquare(Vertices[i].p, p) < R2)
-                {
-                    InteractiveVertexIndex = i;
-                    circle(canvas, Vertices[i].p, radius, Scalar(127, 127, 127), FILLED);
-                    imshow(WindowName, canvas);
-                    return;
-                }
+                InteractiveVertexIndex = i;
+                circle(canvas, Vertices[i].p, radius, Scalar(127, 127, 127), FILLED);
+                imshow(WindowName, canvas);
+                return;
             }
         }
         Vertices.emplace_back(p); // Store the point
@@ -60,8 +59,13 @@ void onMouse(int event, int x, int y, int, void *)
 
         imshow(WindowName, canvas);
 
-        cout << "Stored point: (" << p.x << ", " << p.y << ")\n";
+        // cout << "Stored point: (" << p.x << ", " << p.y << ")\n";
     }
+}
+
+void onSolveCallback(int state, void *userdata)
+{
+    printf("State is %d\n", state);
 }
 
 int main()
@@ -96,13 +100,15 @@ int main()
         {
             vector<WeightedUndirectedEdge> edges;
             GreedySolve(Vertices, edges);
+            double totalWeight = 0;
             for (int i = 0; i < edges.size(); i++)
             {
                 waitKey(200);
                 line(canvas, edges[i].v1->p, edges[i].v2->p, Scalar(50, 50, 50), 2);
+                totalWeight += edges[i].GetWeight();
                 imshow(WindowName, canvas);
-                cout << edges[i].v1->p << " And " << edges[i].v2->p << endl;
             }
+            printf("Total weight is %lf\n", totalWeight);
         }
     }
 
