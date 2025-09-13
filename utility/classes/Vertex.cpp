@@ -1,5 +1,6 @@
 #include "Vertex.h"
 
+
 Vertex::Vertex(cv::Point &p)
 {
     this->p = p;

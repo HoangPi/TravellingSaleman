@@ -4,6 +4,7 @@
 #include "utility/mathLib.h"
 #include "utility/CanvasInteraction/CanvasInteraction.h"
 #include "utility/classes/Vertex.h"
+
 #include "utility/classes/Edge.h"
 
 using namespace cv;
@@ -17,7 +18,8 @@ constexpr int ESCAPE = 0x1b;
 
 auto const WindowName = "White Screen";
 
-Mat canvas;              // Global canvas
+
+Mat canvas;
 vector<Vertex> Vertices; // Global vector to store clicked points
 int InteractiveVertexIndex = -1;
 
@@ -39,6 +41,7 @@ void onMouse(int event, int x, int y, int, void *)
         constexpr int R2 = radius * radius + distance_threshold;
         for (int i = 0; i < Vertices.size(); i++)
         {
+
             if (DistanceSquare(p, Vertices[i].p) < R2)
             {
                 InteractiveVertexIndex = i;
@@ -89,6 +92,7 @@ int main()
         if (key == DELETE || key == BACKSPACE)
         {
             if (InteractiveVertexIndex != -1)
+
             {
                 circle(canvas, Vertices[InteractiveVertexIndex].p, radius, Scalar(255, 255, 255), FILLED);
                 Vertices.erase(Vertices.begin() + InteractiveVertexIndex);

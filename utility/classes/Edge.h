@@ -1,13 +1,13 @@
 #pragma once
 
 #include <opencv2/opencv.hpp>
-
 class WeightedUndirectedEdge
 {
 private:
     double weight;
 
 public:
+
     class Vertex *v1;
     class Vertex *v2;
 
