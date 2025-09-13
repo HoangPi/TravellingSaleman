@@ -1,18 +1,15 @@
-#include "Vertex.h"
+
 #include "Edge.h"
 
-#include <math.h>
+#include "Vertex.h"
+#include "cmath"
 
-Edge::Edge(Vertex *p1, Vertex *p2)
+WeightedUndirectedEdge::WeightedUndirectedEdge(Vertex *v1, Vertex *v2)
 {
-    this->p1 = p1;
-    this->p2 = p2;
-    this->weight = sqrt(this->DistanceSquare());
-}
+    this->v1 = v1;
+    this->v2 = v2;
+    const double deltaX = v1->p.x - v2->p.x;
+    const double deltaY = v1->p.y - v2->p.y;
+    this->weight = std::sqrt((deltaX * deltaX) + (deltaY * deltaY));
 
-int Edge::DistanceSquare()
-{
-    const int deltaX = p1->p.x - p2->p.x;
-    const int deltaY = p1->p.y - p2->p.y;
-    return deltaX * deltaX + deltaY * deltaY;
 }

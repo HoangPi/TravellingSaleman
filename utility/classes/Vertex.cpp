@@ -1,33 +1,14 @@
 #include "Vertex.h"
 
-Vertex::Vertex(Point &p)
+
+Vertex::Vertex(cv::Point &p)
 {
     this->p = p;
-    this->ConnectedEdges.reserve(2);
 }
 
-bool Vertex::CheckNeigborExist(Vertex &v)
+int64 Vertex::DistanceSquare(Vertex &v1, Vertex &v2)
 {
-    for (auto &&e : this->ConnectedEdges)
-    {
-        if(e.p1->p == v.p || e.p2->p == v.p)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-void Vertex::MakeEdge(Vertex &v1, Vertex &v2)
-{
-    if(v1.ConnectedEdges.size() >= 2 || v2.ConnectedEdges.size() >= 2)
-    {
-        return;
-    }
-    if(v1.CheckNeigborExist(v2) || v2.CheckNeigborExist(v1))
-    {
-        return;
-    }
-    v1.ConnectedEdges.emplace_back(&v1, &v2);
-    v2.ConnectedEdges.emplace_back(&v2, &v1);
+    const long long deltaX = v1.p.x - v2.p.x;
+    const long long deltaY = v1.p.y - v2.p.y;
+    return (deltaX * deltaX) + (deltaY * deltaY);
 }
