@@ -15,13 +15,14 @@ constexpr int distance_threshold = 650;
 constexpr int DELETE = 0xff;
 constexpr int BACKSPACE = 0x08;
 constexpr int ESCAPE = 0x1b;
+constexpr int ZERO_BUTTON = 0x30;
 
 auto const WindowName = "White Screen";
-
 
 Mat canvas;
 vector<Vertex> Vertices; // Global vector to store clicked points
 int InteractiveVertexIndex = -1;
+vector<WeightedUndirectedEdge> edges;
 
 // Mouse callback function
 void onMouse(int event, int x, int y, int, void *)
@@ -100,9 +101,12 @@ int main()
                 imshow(WindowName, canvas);
             }
         }
+        else if (key == ZERO_BUTTON)
+        {
+            DeleteEdge(edges, Vertices, canvas, WindowName);
+        }
         else
         {
-            vector<WeightedUndirectedEdge> edges;
             NearestNeighbor(Vertices, edges);
             double totalWeight = 0;
             for (int i = 0; i < edges.size(); i++)
