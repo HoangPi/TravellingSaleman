@@ -12,6 +12,9 @@ struct SimpleEdge
     long long Distance = -1;
 };
 
+extern cv::Mat ChristofidesCanvas;
+extern const char *const ChristofidesWindowName;
+
 void ChristofidesSolve(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &result);
 void ConnectVertices(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &edges);
 void PrimMST(std::vector<Vertex> &FullyConntectedVertices, std::vector<Vertex> &OriginVertices, std::vector<WeightedUndirectedEdge> &MST_Edges);

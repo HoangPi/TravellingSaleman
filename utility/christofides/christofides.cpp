@@ -1,15 +1,35 @@
 #include "christofides.h"
+#include "../CanvasInteraction/CanvasInteraction.h"
+
+cv::Mat ChristofidesCanvas = cv::Mat(400, 600, CV_8UC3, cv::Scalar(255, 255, 255));
+const char *const ChristofidesWindowName = "Hello everyone, my name is Markplier";
 
 void ChristofidesSolve(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &result)
 {
     const size_t size = vertices.size();
     std::vector<Vertex> verticesCopy = vertices;
     std::vector<WeightedUndirectedEdge> edges;
+    std::vector<WeightedUndirectedEdge> fake;
     result.clear();
     result.reserve(size);
     edges.reserve(size * size);
+    auto display = [](std::vector<WeightedUndirectedEdge> &fake, std::vector<Vertex> &verticesCopy, std::vector<WeightedUndirectedEdge> &edges, const int wait)
+    {
+        DeleteEdge(fake, verticesCopy, ChristofidesCanvas, ChristofidesWindowName);
+        DisplayEdges(ChristofidesWindowName, ChristofidesCanvas, edges, wait);
+        waitKey(0);
+    };
+    // Show empty canvas
+
+    display(fake, verticesCopy, edges, 1);
+
+    // Show canvas with fully connected vertices
     ConnectVertices(verticesCopy, edges);
+    display(fake, verticesCopy, edges, 50);
+
+    // Show canvas with MST
     PrimMST(verticesCopy, vertices, result);
+    display(fake, vertices, result, 0);
 }
 
 void ConnectVertices(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &edges)
