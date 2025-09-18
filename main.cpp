@@ -107,8 +107,9 @@ int main()
         }
         else
         {
-            Solve(Vertices, edges, ESOLVE_TYPE::NEAREST_NEIGBOR);
-            double totalWeight = DisplayEdges(WindowName, canvas, edges, 100);
+            DeleteEdge(edges, Vertices, canvas, WindowName);
+            Solve(Vertices, edges, ESOLVE_TYPE::CRHISTOFIDES);
+            double totalWeight = DisplayEdges(WindowName, canvas, edges, 10);
             printf("Total weight is %lf\n", totalWeight);
         }
     }
