@@ -64,3 +64,19 @@ void NearestNeighbor(std::vector<Vertex> &vertices, std::vector<WeightedUndirect
     }
     result.emplace_back(&vertices[current], &vertices[0]);
 }
+
+void Solve(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &result, ESOLVE_TYPE Type)
+{
+    switch (Type)
+    {
+    case ESOLVE_TYPE::NEAREST_NEIGBOR:
+        NearestNeighbor(vertices, result);
+        break;
+    case ESOLVE_TYPE::CRHISTOFIDES:
+        ChristofidesSolve(vertices, result);
+        break;
+    default:
+        NearestNeighbor(vertices, result);
+        break;
+    }
+}
