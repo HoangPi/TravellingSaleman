@@ -8,11 +8,11 @@ void ChristofidesSolve(std::vector<Vertex> &vertices, std::vector<WeightedUndire
 {
     const size_t size = vertices.size();
     std::vector<Vertex> verticesCopy = vertices;
-    std::vector<WeightedUndirectedEdge> edges;
+    std::vector<WeightedUndirectedEdge> MST_Edges;
     std::vector<WeightedUndirectedEdge> fake;
     result.clear();
     result.reserve(size);
-    edges.reserve(size * size);
+    MST_Edges.reserve(size * size);
     auto display = [](std::vector<WeightedUndirectedEdge> &fake, std::vector<Vertex> &verticesCopy, std::vector<WeightedUndirectedEdge> &edges, const int wait)
     {
         DeleteEdge(fake, verticesCopy, ChristofidesCanvas, ChristofidesWindowName);
@@ -21,11 +21,11 @@ void ChristofidesSolve(std::vector<Vertex> &vertices, std::vector<WeightedUndire
     };
     // Show empty canvas
 
-    display(fake, verticesCopy, edges, 1);
+    display(fake, verticesCopy, MST_Edges, 1);
 
     // Show canvas with fully connected vertices
-    ConnectVertices(verticesCopy, edges);
-    display(fake, verticesCopy, edges, 50);
+    ConnectVertices(verticesCopy, MST_Edges);
+    display(fake, verticesCopy, MST_Edges, 50);
 
     // Show canvas with MST
     PrimMST(verticesCopy, vertices, result);
