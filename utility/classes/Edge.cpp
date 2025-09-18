@@ -14,3 +14,22 @@ WeightedUndirectedEdge::WeightedUndirectedEdge(Vertex *v1, Vertex *v2)
     v1->ConnectedEdges.push_back(this);
     v2->ConnectedEdges.push_back(this);
 }
+
+WeightedUndirectedEdge::~WeightedUndirectedEdge()
+{
+    for (size_t i = 0; i < this->v1->ConnectedEdges.size(); i++)
+    {
+        if (this->v1->ConnectedEdges[i] == this)
+        {
+            this->v1->ConnectedEdges.erase(v1->ConnectedEdges.begin() + i);
+        }
+    }
+    for (size_t i = 0; i < this->v2->ConnectedEdges.size(); i++)
+    {
+        if (this->v2->ConnectedEdges[i] == this)
+        {
+            this->v2->ConnectedEdges.erase(v2->ConnectedEdges.begin() + i);
+        }
+    }
+    printf("Good byte\n");
+}
