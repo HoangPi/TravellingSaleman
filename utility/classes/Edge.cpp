@@ -31,5 +31,4 @@ WeightedUndirectedEdge::~WeightedUndirectedEdge()
             this->v2->ConnectedEdges.erase(v2->ConnectedEdges.begin() + i);
         }
     }
-    printf("Good byte\n");
 }
