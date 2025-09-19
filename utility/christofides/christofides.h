@@ -23,7 +23,7 @@ extern const char *const ChristofidesWindowName;
 
 void ChristofidesSolve(Graph &graph);
 void ConnectVertices(Graph &graph);
-void PrimMST(std::vector<Vertex> &FullyConntectedVertices, std::vector<Vertex> &OriginVertices, std::vector<WeightedUndirectedEdge> &MST_Edges);
+void PrimMST(Graph &graph);
 bool HasVisited(const Vertex *VertexToCheck, const std::vector<bool> &Visited, const Vertex *Begin);
 inline int FindIndex(const Vertex *Target, const Vertex *Base) { return Target - Base; }
 void FindOddDegreeVertices(std::vector<Vertex> &MST_Vertices, std::vector<WeightedUndirectedEdge> &MST_Edges);
