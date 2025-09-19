@@ -73,7 +73,7 @@ void Solve(Graph &graph, ESOLVE_TYPE Type)
         NearestNeighbor(graph);
         break;
     case ESOLVE_TYPE::CRHISTOFIDES:
-        // ChristofidesSolve(vertices, result);
+        ChristofidesSolve(graph);
         break;
     default:
         NearestNeighbor(graph);

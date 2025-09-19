@@ -15,46 +15,45 @@ auto hasvitedAll = [](std::vector<bool> &vectorToCheck)
     }
     return true;
 };
-auto display = [](std::vector<WeightedUndirectedEdge> &fake, std::vector<Vertex> &verticesCopy, std::vector<WeightedUndirectedEdge> &edges, const int wait, const char *const name)
+auto display = [](Graph &g, const int wait, const char *const name)
 {
-    DeleteEdge(fake, verticesCopy, ChristofidesCanvas, name);
-    DisplayEdges(name, ChristofidesCanvas, edges, wait);
+    std::vector<WeightedUndirectedEdge> empty;
+    Graph fake(g.Vertices, empty);
+    DeleteEdge(fake, ChristofidesCanvas, name);
+    DisplayEdges(name, ChristofidesCanvas, g.Edges, wait);
 };
 
-void ChristofidesSolve(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &result)
+void ChristofidesSolve(Graph &graph)
 {
-    const size_t size = vertices.size();
-    std::vector<Vertex> ConnectedVertices = vertices;
-    std::vector<WeightedUndirectedEdge> ConnectedEdges;
-    std::vector<WeightedUndirectedEdge> fake;
-    result.clear();
-    result.reserve(size);
-    ConnectedEdges.reserve(size * size);
+    const size_t size = graph.Vertices.size();
+    graph.Edges.clear();
+    graph.Edges.reserve(size);
     // Show empty canvas
 
-    display(fake, ConnectedVertices, ConnectedEdges, 1, ChristofidesWindowName);
+    Graph ChristofideseGraph(graph.Vertices, graph.Edges);
+    display(ChristofideseGraph, 1, ChristofidesWindowName);
 
     // Show canvas with fully connected vertices
-    ConnectVertices(ConnectedVertices, ConnectedEdges);
-    display(fake, ConnectedVertices, ConnectedEdges, 50, ChristofidesWindowName);
+    ConnectVertices(ChristofideseGraph);
+    display(ChristofideseGraph, 50, ChristofidesWindowName);
     waitKey(0);
 
     // Show canvas with MST
-    PrimMST(ConnectedVertices, vertices, result);
-    display(fake, vertices, result, 200, ChristofidesWindowName);
-    waitKey(0);
+    // PrimMST(ConnectedVertices, vertices, result);
+    // display(fake, vertices, result, 200, ChristofidesWindowName);
+    // waitKey(0);
 
-    FindOddDegreeVertices(vertices, result);
-    display(fake, vertices, result, -1, ChristofidesWindowName);
+    // FindOddDegreeVertices(vertices, result);
+    // display(fake, vertices, result, -1, ChristofidesWindowName);
 }
 
-void ConnectVertices(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &edges)
+void ConnectVertices(Graph &graph)
 {
-    for (size_t i = 0; i < vertices.size(); i++)
+    for (size_t i = 0; i < graph.Vertices.size(); i++)
     {
-        for (size_t j = i + 1; j < vertices.size(); j++)
+        for (size_t j = i + 1; j < graph.Vertices.size(); j++)
         {
-            edges.emplace_back(&vertices[i], &vertices[j]);
+            graph.AddEdges(&graph.Vertices[i], &graph.Vertices[j]);
         }
     }
 }
@@ -170,7 +169,7 @@ void FindOddDegreeVertices(std::vector<Vertex> &MST_Vertices, std::vector<Weight
             break;
         }
         std::vector<WeightedUndirectedEdge> fake;
-        display(fake, MST_Vertices, MST_Edges, -1, ChristofidesWindowName);
+        // display(fake, MST_Vertices, MST_Edges, -1, ChristofidesWindowName);
         MST_Edges.emplace_back(OddDegreeVertices[save_i], OddDegreeVertices[save_j]);
         visited[save_i] = true;
         visited[save_j] = true;
