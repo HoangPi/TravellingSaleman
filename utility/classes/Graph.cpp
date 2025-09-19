@@ -14,7 +14,6 @@ Graph::Graph(std::vector<Vertex> &Vertices, std::vector<WeightedUndirectedEdge> 
         cv::Point p = v.p;
         this->Vertices.emplace_back(p);
     }
-    
 
     for (auto &&oldEdge : Edges)
     {
@@ -53,8 +52,8 @@ void Graph::AddEdges(Vertex *v1, Vertex *v2)
     if (this->IsValid(v1) && this->IsValid(v2))
     {
         this->Edges.emplace_back(v1, v2);
-        auto lastEdge = this->Edges.back();
-        v1->ConnectedEdges.push_back(&lastEdge);
-        v2->ConnectedEdges.push_back(&lastEdge);
+        WeightedUndirectedEdge *lastEdge = &this->Edges[this->Edges.size() - 1];
+        v1->ConnectedEdges.push_back(lastEdge);
+        v2->ConnectedEdges.push_back(lastEdge);
     }
 }

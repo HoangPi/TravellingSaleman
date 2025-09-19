@@ -49,6 +49,7 @@ void ChristofidesSolve(Graph &graph)
 
 void ConnectVertices(Graph &graph)
 {
+    graph.Edges.reserve(graph.Vertices.size() * graph.Vertices.size());
     for (size_t i = 0; i < graph.Vertices.size(); i++)
     {
         for (size_t j = i + 1; j < graph.Vertices.size(); j++)
@@ -61,12 +62,15 @@ void ConnectVertices(Graph &graph)
 void PrimMST(Graph &graph)
 {
     std::vector<bool> visited(graph.Vertices.size(), false);
+    std::vector<SimpleEdge> simpleEdges;
+    simpleEdges.reserve(graph.Vertices.size());
 
     visited[0] = true;
 
     while (!hasvitedAll(visited))
     {
-        SimpleEdge simpleEdge;
+        SimpleEdge edge;
+        int candidateIndex = -1;
         for (size_t i = 0; i < visited.size(); i++)
         {
             if (!visited[i])
@@ -75,30 +79,36 @@ void PrimMST(Graph &graph)
             }
             for (size_t j = 0; j < graph.Vertices[i].ConnectedEdges.size(); j++)
             {
-                Vertex *v1Position = &graph.Vertices[i];
-                Vertex *v2Position = graph.Vertices[i].ConnectedEdges[j]->v1 == &graph.Vertices[i]
-                                         ? graph.Vertices[i].ConnectedEdges[j]->v2
-                                         : graph.Vertices[i].ConnectedEdges[j]->v1;
-                if (HasVisited(v2Position, visited, &graph.Vertices[0]))
-                    continue;
-                if (simpleEdge.Distance == -1 || simpleEdge.Distance > graph.Vertices[i].ConnectedEdges[j]->GetWeight())
+                int evaluateIndex = FindIndex(
+                    graph.Vertices[i].ConnectedEdges[j]->v1 == &graph.Vertices[i]
+                        ? graph.Vertices[i].ConnectedEdges[j]->v2
+                        : graph.Vertices[i].ConnectedEdges[j]->v1,
+                    &graph.Vertices[0]);
+                if ((edge.Distance == -1 ||
+                     edge.Distance > graph.Vertices[i].ConnectedEdges[j]->GetWeight()) &&
+                    !visited[evaluateIndex])
                 {
                     // This ensure v2 will always be new vertex
-                    simpleEdge.v1 = v1Position;
-                    simpleEdge.v2 = v2Position;
-                    simpleEdge.Distance = graph.Vertices[i].ConnectedEdges[j]->GetWeight();
+                    edge.v1 = &graph.Vertices[i];
+                    edge.v2 = &graph.Vertices[evaluateIndex];
+                    edge.Distance = graph.Vertices[i].ConnectedEdges[j]->GetWeight();
+                    candidateIndex = evaluateIndex;
                 }
             }
         }
-        if (simpleEdge.Distance == -1)
+        if (edge.Distance == -1)
         {
-            return;
+            break;;
         }
-        const int index1 = FindIndex(simpleEdge.v1, &graph.Vertices[0]);
-        const int index2 = FindIndex(simpleEdge.v2, &graph.Vertices[0]);
-        visited[index2] = true;
-        graph.AddEdges(&graph.Vertices[index1], &graph.Vertices[index2]);
+        visited[candidateIndex] = true;
+        simpleEdges.push_back(edge);
     }
+    graph.Edges.clear();
+    for (auto &&edge : simpleEdges)
+    {
+        graph.AddEdges(edge.v1, edge.v2);
+    }
+    
 }
 
 bool HasVisited(const Vertex *VertexToCheck, const std::vector<bool> &Visited, const Vertex *Begin)
@@ -191,7 +201,5 @@ void EulerTravel(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEd
                 shortestEdge;
             }
         }
-        
-        
     }
 }
