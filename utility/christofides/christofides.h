@@ -12,12 +12,6 @@ struct SimpleEdge
     long long Distance = -1;
 };
 
-struct SimpleVertexClone
-{
-    class std::shared_ptr<Vertex> Current = nullptr;
-    class Vertex *Origin = nullptr;
-};
-
 extern cv::Mat ChristofidesCanvas;
 extern const char *const ChristofidesWindowName;
 
