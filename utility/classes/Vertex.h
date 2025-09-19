@@ -11,5 +11,4 @@ public:
 
     Vertex(cv::Point &p);
     Vertex() {};
-    static int64 DistanceSquare(Vertex &v1, Vertex &v2);
 };
