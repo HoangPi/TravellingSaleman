@@ -176,3 +176,24 @@ void FindOddDegreeVertices(std::vector<Vertex> &MST_Vertices, std::vector<Weight
         visited[save_j] = true;
     }
 }
+
+void EulerTravel(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &edges, std::vector<WeightedUndirectedEdge> &path)
+{
+    std::vector<Vertex *> visited;
+    visited.reserve(vertices.size());
+    Vertex *current;
+    while (edges.size() > 0)
+    {
+        visited.push_back(current);
+        WeightedUndirectedEdge *shortestEdge = nullptr;
+        for (size_t i = 0; i < current->ConnectedEdges.size(); i++)
+        {
+            if (!shortestEdge || shortestEdge->GetWeight() > current->ConnectedEdges[i]->GetWeight())
+            {
+                shortestEdge;
+            }
+        }
+        
+        
+    }
+}
