@@ -43,13 +43,13 @@ void ChristofidesSolve(Graph &graph)
     display(ChristofideseGraph, 200, ChristofidesWindowName);
     waitKey(0);
 
-    // FindOddDegreeVertices(vertices, result);
-    // display(fake, vertices, result, -1, ChristofidesWindowName);
+    MakeEulerCircuit(ChristofideseGraph);
+    display(ChristofideseGraph, -1, ChristofidesWindowName);
 }
 
 void ConnectVertices(Graph &graph)
 {
-    graph.Edges.reserve(graph.Vertices.size() * graph.Vertices.size());
+    graph.Edges.reserve((graph.Vertices.size() * (graph.Vertices.size() - 1)/2));
     for (size_t i = 0; i < graph.Vertices.size(); i++)
     {
         for (size_t j = i + 1; j < graph.Vertices.size(); j++)
@@ -116,12 +116,12 @@ bool HasVisited(const Vertex *VertexToCheck, const std::vector<bool> &Visited, c
     return Visited[FindIndex(VertexToCheck, Begin)];
 }
 
-void FindOddDegreeVertices(std::vector<Vertex> &MST_Vertices, std::vector<WeightedUndirectedEdge> &MST_Edges)
+void MakeEulerCircuit(Graph &graph)
 {
     std::vector<Vertex *> OddDegreeVertices;
-    auto IsOverLap = [&MST_Edges](Vertex *v1, Vertex *v2)
+    auto IsOverLap = [&graph](Vertex *v1, Vertex *v2)
     {
-        for (auto &&e : MST_Edges)
+        for (auto &&e : graph.Edges)
         {
             if ((e.v1 == v1 && e.v2 == v2) || (e.v2 == v1 && e.v1 == v2))
             {
@@ -131,13 +131,13 @@ void FindOddDegreeVertices(std::vector<Vertex> &MST_Vertices, std::vector<Weight
         return false;
     };
 
-    OddDegreeVertices.reserve(MST_Vertices.size());
+    OddDegreeVertices.reserve(graph.Vertices.size());
     // Find all odd degree vertices
-    for (size_t i = 0; i < MST_Vertices.size(); i++)
+    for (size_t i = 0; i < graph.Vertices.size(); i++)
     {
-        if ((MST_Vertices[i].ConnectedEdges.size() & 1) != 0)
+        if ((graph.Vertices[i].ConnectedEdges.size() & 1) != 0)
         {
-            OddDegreeVertices.push_back(&MST_Vertices[i]);
+            OddDegreeVertices.push_back(&graph.Vertices[i]);
         }
     }
     std::vector<SimpleEdge> subgraphEdges;
@@ -179,7 +179,7 @@ void FindOddDegreeVertices(std::vector<Vertex> &MST_Vertices, std::vector<Weight
         }
         std::vector<WeightedUndirectedEdge> fake;
         // display(fake, MST_Vertices, MST_Edges, -1, ChristofidesWindowName);
-        MST_Edges.emplace_back(OddDegreeVertices[save_i], OddDegreeVertices[save_j]);
+        graph.AddEdges(OddDegreeVertices[save_i], OddDegreeVertices[save_j]);
         visited[save_i] = true;
         visited[save_j] = true;
     }
