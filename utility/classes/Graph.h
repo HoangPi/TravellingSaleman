@@ -10,6 +10,7 @@ public:
     std::vector<WeightedUndirectedEdge> Edges;
 
     Graph() {};
+    Graph(std::vector<Vertex> &Vertices, std::vector<WeightedUndirectedEdge> &Edges);
     bool IsValid();
     bool IsValid(Vertex *v);
     void AddVertex(cv::Point &p);

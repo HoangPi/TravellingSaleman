@@ -15,92 +15,100 @@ auto hasvitedAll = [](std::vector<bool> &vectorToCheck)
     }
     return true;
 };
-auto display = [](std::vector<WeightedUndirectedEdge> &fake, std::vector<Vertex> &verticesCopy, std::vector<WeightedUndirectedEdge> &edges, const int wait, const char *const name)
+auto display = [](Graph &g, const int wait, const char *const name)
 {
-    DeleteEdge(fake, verticesCopy, ChristofidesCanvas, name);
-    DisplayEdges(name, ChristofidesCanvas, edges, wait);
+    std::vector<WeightedUndirectedEdge> empty;
+    Graph fake(g.Vertices, empty);
+    DeleteEdge(fake, ChristofidesCanvas, name);
+    DisplayEdges(name, ChristofidesCanvas, g.Edges, wait);
 };
 
-void ChristofidesSolve(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &result)
+void ChristofidesSolve(Graph &graph)
 {
-    const size_t size = vertices.size();
-    std::vector<Vertex> ConnectedVertices = vertices;
-    std::vector<WeightedUndirectedEdge> ConnectedEdges;
-    std::vector<WeightedUndirectedEdge> fake;
-    result.clear();
-    result.reserve(size);
-    ConnectedEdges.reserve(size * size);
+    const size_t size = graph.Vertices.size();
+    graph.Edges.clear();
+    graph.Edges.reserve(size);
     // Show empty canvas
 
-    display(fake, ConnectedVertices, ConnectedEdges, 1, ChristofidesWindowName);
+    Graph ChristofideseGraph(graph.Vertices, graph.Edges);
+    display(ChristofideseGraph, 1, ChristofidesWindowName);
 
     // Show canvas with fully connected vertices
-    ConnectVertices(ConnectedVertices, ConnectedEdges);
-    display(fake, ConnectedVertices, ConnectedEdges, 50, ChristofidesWindowName);
+    ConnectVertices(ChristofideseGraph);
+    display(ChristofideseGraph, 50, ChristofidesWindowName);
     waitKey(0);
 
     // Show canvas with MST
-    PrimMST(ConnectedVertices, vertices, result);
-    display(fake, vertices, result, 200, ChristofidesWindowName);
+    PrimMST(ChristofideseGraph);
+    display(ChristofideseGraph, 200, ChristofidesWindowName);
     waitKey(0);
 
-    FindOddDegreeVertices(vertices, result);
-    display(fake, vertices, result, -1, ChristofidesWindowName);
+    // FindOddDegreeVertices(vertices, result);
+    // display(fake, vertices, result, -1, ChristofidesWindowName);
 }
 
-void ConnectVertices(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &edges)
+void ConnectVertices(Graph &graph)
 {
-    for (size_t i = 0; i < vertices.size(); i++)
+    graph.Edges.reserve(graph.Vertices.size() * graph.Vertices.size());
+    for (size_t i = 0; i < graph.Vertices.size(); i++)
     {
-        for (size_t j = i + 1; j < vertices.size(); j++)
+        for (size_t j = i + 1; j < graph.Vertices.size(); j++)
         {
-            edges.emplace_back(&vertices[i], &vertices[j]);
+            graph.AddEdges(&graph.Vertices[i], &graph.Vertices[j]);
         }
     }
 }
 
-void PrimMST(std::vector<Vertex> &FullyConntectedVertices, std::vector<Vertex> &OriginVertices, std::vector<WeightedUndirectedEdge> &MST_Edges)
+void PrimMST(Graph &graph)
 {
-    MST_Edges.clear();
-    std::vector<bool> visited(FullyConntectedVertices.size(), false);
+    std::vector<bool> visited(graph.Vertices.size(), false);
+    std::vector<SimpleEdge> simpleEdges;
+    simpleEdges.reserve(graph.Vertices.size());
 
     visited[0] = true;
 
     while (!hasvitedAll(visited))
     {
-        SimpleEdge simpleEdge;
+        SimpleEdge edge;
+        int candidateIndex = -1;
         for (size_t i = 0; i < visited.size(); i++)
         {
             if (!visited[i])
             {
                 continue;
             }
-            for (size_t j = 0; j < FullyConntectedVertices[i].ConnectedEdges.size(); j++)
+            for (size_t j = 0; j < graph.Vertices[i].ConnectedEdges.size(); j++)
             {
-                Vertex *v1Position = &FullyConntectedVertices[i];
-                Vertex *v2Position = FullyConntectedVertices[i].ConnectedEdges[j]->v1 == &FullyConntectedVertices[i]
-                                         ? FullyConntectedVertices[i].ConnectedEdges[j]->v2
-                                         : FullyConntectedVertices[i].ConnectedEdges[j]->v1;
-                if (HasVisited(v2Position, visited, &FullyConntectedVertices[0]))
-                    continue;
-                if (simpleEdge.Distance == -1 || simpleEdge.Distance > FullyConntectedVertices[i].ConnectedEdges[j]->GetWeight())
+                int evaluateIndex = FindIndex(
+                    graph.Vertices[i].ConnectedEdges[j]->v1 == &graph.Vertices[i]
+                        ? graph.Vertices[i].ConnectedEdges[j]->v2
+                        : graph.Vertices[i].ConnectedEdges[j]->v1,
+                    &graph.Vertices[0]);
+                if ((edge.Distance == -1 ||
+                     edge.Distance > graph.Vertices[i].ConnectedEdges[j]->GetWeight()) &&
+                    !visited[evaluateIndex])
                 {
                     // This ensure v2 will always be new vertex
-                    simpleEdge.v1 = v1Position;
-                    simpleEdge.v2 = v2Position;
-                    simpleEdge.Distance = FullyConntectedVertices[i].ConnectedEdges[j]->GetWeight();
+                    edge.v1 = &graph.Vertices[i];
+                    edge.v2 = &graph.Vertices[evaluateIndex];
+                    edge.Distance = graph.Vertices[i].ConnectedEdges[j]->GetWeight();
+                    candidateIndex = evaluateIndex;
                 }
             }
         }
-        if (simpleEdge.Distance == -1)
+        if (edge.Distance == -1)
         {
-            return;
+            break;;
         }
-        const int index1 = FindIndex(simpleEdge.v1, &FullyConntectedVertices[0]);
-        const int index2 = FindIndex(simpleEdge.v2, &FullyConntectedVertices[0]);
-        visited[index2] = true;
-        MST_Edges.emplace_back(&OriginVertices[index1], &OriginVertices[index2]);
+        visited[candidateIndex] = true;
+        simpleEdges.push_back(edge);
     }
+    graph.Edges.clear();
+    for (auto &&edge : simpleEdges)
+    {
+        graph.AddEdges(edge.v1, edge.v2);
+    }
+    
 }
 
 bool HasVisited(const Vertex *VertexToCheck, const std::vector<bool> &Visited, const Vertex *Begin)
@@ -170,7 +178,7 @@ void FindOddDegreeVertices(std::vector<Vertex> &MST_Vertices, std::vector<Weight
             break;
         }
         std::vector<WeightedUndirectedEdge> fake;
-        display(fake, MST_Vertices, MST_Edges, -1, ChristofidesWindowName);
+        // display(fake, MST_Vertices, MST_Edges, -1, ChristofidesWindowName);
         MST_Edges.emplace_back(OddDegreeVertices[save_i], OddDegreeVertices[save_j]);
         visited[save_i] = true;
         visited[save_j] = true;
@@ -193,7 +201,5 @@ void EulerTravel(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEd
                 shortestEdge;
             }
         }
-        
-        
     }
 }
