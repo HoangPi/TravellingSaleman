@@ -20,7 +20,7 @@ auto display = [](Graph &g, const int wait, const char *const name)
     std::vector<WeightedUndirectedEdge> empty;
     Graph fake(g.Vertices, empty);
     DeleteEdge(fake, ChristofidesCanvas, name);
-    DisplayEdges(name, ChristofidesCanvas, g.Edges, wait);
+    DisplayEdges(name, ChristofidesCanvas, g.Edges, wait, 15.0f, {0.0f, 127.0f, 0.0f});
 };
 
 void ChristofidesSolve(Graph &graph)
@@ -160,7 +160,10 @@ void MakeEulerCircuit(Graph &graph)
                 {
                     continue;
                 }
-                double weight = WeightedUndirectedEdge(OddDegreeVertices[i], OddDegreeVertices[j]).GetWeight();
+                double weight;
+                {
+                    weight = WeightedUndirectedEdge(OddDegreeVertices[i], OddDegreeVertices[j]).GetWeight();
+                }
                 if (!IsOverLap(OddDegreeVertices[i], OddDegreeVertices[j]))
                 {
                     if (
@@ -178,7 +181,7 @@ void MakeEulerCircuit(Graph &graph)
         }
         if (simpleEdge.Distance == -1)
         {
-            break;
+            continue;;
         }
         std::vector<WeightedUndirectedEdge> fake;
         // display(fake, MST_Vertices, MST_Edges, -1, ChristofidesWindowName);

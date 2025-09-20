@@ -11,5 +11,5 @@ void HighlightVertex(Point p, Mat &canvas, const cv::String &winname = "White Sc
 
 // Delete edges by redraw vertices without edges
 void DeleteEdge(Graph &graph, cv::Mat &canvas, const cv::String &winname);
-void DisplaySingleEdge(const char *const WindowName, Mat &canvas, const WeightedUndirectedEdge &edge, const int offset);
-double DisplayEdges(const char *const WindowName, Mat &canvas, std::vector<WeightedUndirectedEdge> &edges, const int WaitTime = 100, const int offset = 15);
+void DisplaySingleEdge(const char *const WindowName, Mat &canvas, const WeightedUndirectedEdge &edge, const int offset, cv::Scalar Color);
+double DisplayEdges(const char *const WindowName, Mat &canvas, std::vector<WeightedUndirectedEdge> &edges, const int WaitTime = 100, const int offset = 15, cv::Scalar Color = {50, 50, 50});
