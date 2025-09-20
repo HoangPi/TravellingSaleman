@@ -29,23 +29,23 @@ cv::Point PointAtDistance(const cv::Point &a, const cv::Point &b, double n)
     return a + Point(unit * n);
 }
 
-void NearestNeighbor(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &result)
+void NearestNeighbor(Graph &graph)
 {
-    result.clear();
-    result.reserve(vertices.size() - 1);
+    graph.Edges.clear();
+    graph.Edges.reserve(graph.Vertices.size() - 1);
     std::vector<int> visited;
-    visited.reserve(vertices.size());
+    visited.reserve(graph.Vertices.size());
     visited.push_back(0);
     int current = 0;
     while (visited.size() < visited.capacity())
     {
         double minDistance = 0x7fffffffffffffff;
         int next = -1;
-        for (int i = 0; i < vertices.size(); i++)
+        for (int i = 0; i < graph.Vertices.size(); i++)
         {
             if (!ExistInVector(visited, i))
             {
-                const double temp = DistanceSquare(vertices[current].p, vertices[i].p);
+                const double temp = DistanceSquare(graph.Vertices[current].p, graph.Vertices[i].p);
                 if (temp < minDistance)
                 {
                     next = i;
@@ -55,12 +55,28 @@ void NearestNeighbor(std::vector<Vertex> &vertices, std::vector<WeightedUndirect
         }
         if (next == -1)
         {
-            result.emplace_back(&vertices[current], &vertices[0]);
+            graph.Edges.emplace_back(&graph.Vertices[current], &graph.Vertices[0]);
             return;
         }
         visited.push_back(next);
-        result.emplace_back(&vertices[current], &vertices[next]);
+        graph.Edges.emplace_back(&graph.Vertices[current], &graph.Vertices[next]);
         current = next;
     }
-    result.emplace_back(&vertices[current], &vertices[0]);
+    graph.Edges.emplace_back(&graph.Vertices[current], &graph.Vertices[0]);
+}
+
+void Solve(Graph &graph, ESOLVE_TYPE Type)
+{
+    switch (Type)
+    {
+    case ESOLVE_TYPE::NEAREST_NEIGBOR:
+        NearestNeighbor(graph);
+        break;
+    case ESOLVE_TYPE::CRHISTOFIDES:
+        ChristofidesSolve(graph);
+        break;
+    default:
+        NearestNeighbor(graph);
+        break;
+    }
 }

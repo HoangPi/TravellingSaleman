@@ -21,6 +21,8 @@ set(SOURCES
     utility/CanvasInteraction/CanvasInteraction.cpp
     utility/classes/Edge.cpp
     utility/classes/Vertex.cpp
+    utility/classes/Graph.cpp
+    utility/christofides/christofides.cpp
 )
 
 # Create executable

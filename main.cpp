@@ -4,7 +4,7 @@
 #include "utility/mathLib.h"
 #include "utility/CanvasInteraction/CanvasInteraction.h"
 #include "utility/classes/Vertex.h"
-
+#include "utility/classes/Graph.h"
 #include "utility/classes/Edge.h"
 
 using namespace cv;
@@ -16,42 +16,48 @@ constexpr int DELETE = 0xff;
 constexpr int BACKSPACE = 0x08;
 constexpr int ESCAPE = 0x1b;
 constexpr int ZERO_BUTTON = 0x30;
+constexpr int ONE_BUTTON = 0x31;
+constexpr int TWO_BUTTON = 0x32;
 
 auto const WindowName = "White Screen";
 
 Mat canvas;
-vector<Vertex> Vertices; // Global vector to store clicked points
 int InteractiveVertexIndex = -1;
-vector<WeightedUndirectedEdge> edges;
+Graph graph;
 
 // Mouse callback function
 void onMouse(int event, int x, int y, int, void *)
 {
     if (event == EVENT_LBUTTONDOWN)
     {
+        if (!graph.Edges.empty())
+        {
+            DeleteEdge(graph, canvas, WindowName);
+            DisplayEdges(WindowName, canvas, graph.Edges, 10);
+        }
         Point p(x, y);
 
         auto color = canvas.at<cv::Vec3b>(p);
         if (InteractiveVertexIndex != -1)
         {
-            circle(canvas, Vertices[InteractiveVertexIndex].p, radius, Scalar(0, 0, 0), FILLED);
+            circle(canvas, graph.Vertices[InteractiveVertexIndex].p, radius, Scalar(0, 0, 0), FILLED);
             imshow(WindowName, canvas);
             InteractiveVertexIndex = -1;
             return;
         }
         constexpr int R2 = radius * radius + distance_threshold;
-        for (int i = 0; i < Vertices.size(); i++)
+        for (int i = 0; i < graph.Vertices.size(); i++)
         {
 
-            if (DistanceSquare(p, Vertices[i].p) < R2)
+            if (DistanceSquare(p, graph.Vertices[i].p) < R2)
             {
                 InteractiveVertexIndex = i;
-                circle(canvas, Vertices[i].p, radius, Scalar(127, 127, 127), FILLED);
+                circle(canvas, graph.Vertices[i].p, radius, Scalar(127, 127, 127), FILLED);
                 imshow(WindowName, canvas);
                 return;
             }
         }
-        Vertices.emplace_back(p); // Store the point
+        graph.Vertices.emplace_back(p); // Store the point
 
         // Draw a dark circle at the click position
         circle(canvas, p, radius, Scalar(0, 0, 0), FILLED);
@@ -95,27 +101,35 @@ int main()
             if (InteractiveVertexIndex != -1)
 
             {
-                circle(canvas, Vertices[InteractiveVertexIndex].p, radius, Scalar(255, 255, 255), FILLED);
-                Vertices.erase(Vertices.begin() + InteractiveVertexIndex);
+                circle(canvas, graph.Vertices[InteractiveVertexIndex].p, radius, Scalar(255, 255, 255), FILLED);
+                graph.Vertices.erase(graph.Vertices.begin() + InteractiveVertexIndex);
                 InteractiveVertexIndex = -1;
                 imshow(WindowName, canvas);
             }
         }
         else if (key == ZERO_BUTTON)
         {
-            DeleteEdge(edges, Vertices, canvas, WindowName);
+            DeleteEdge(graph, canvas, WindowName);
         }
-        else
+        else if (key == ONE_BUTTON)
         {
-            NearestNeighbor(Vertices, edges);
-            double totalWeight = DisplayEdges(WindowName, canvas, edges, 100);
-            printf("Total weight is %lf\n", totalWeight);
+            DeleteEdge(graph, canvas, WindowName);
+            Solve(graph, ESOLVE_TYPE::CRHISTOFIDES);
+            double totalWeight = DisplayEdges(WindowName, canvas, graph.Edges, 100);
+            printf("Christofides solve: %lf\n", totalWeight);
+        }
+        else if (key == TWO_BUTTON)
+        {
+            DeleteEdge(graph, canvas, WindowName);
+            Solve(graph, ESOLVE_TYPE::NEAREST_NEIGBOR);
+            double totalWeight = DisplayEdges(WindowName, canvas, graph.Edges, 100);
+            printf("Nearest neigbor: %lf\n", totalWeight);
         }
     }
 
     // Print all stored points after exiting
     cout << "\nAll clicked points:\n";
-    for (const auto &pt : Vertices)
+    for (const auto &pt : graph.Vertices)
     {
         cout << "(" << pt.p.x << ", " << pt.p.y << ")\n";
     }

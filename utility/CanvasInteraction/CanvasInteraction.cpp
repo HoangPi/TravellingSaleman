@@ -1,11 +1,11 @@
 #include "CanvasInteraction.h"
 
-void DeleteEdge(std::vector<WeightedUndirectedEdge> &Edges, std::vector<Vertex> Vertices, cv::Mat &canvas, const cv::String &winname)
+void DeleteEdge(Graph &graph, cv::Mat &canvas, const cv::String &winname)
 {
     constexpr int radius = 10;
     canvas.setTo(cv::Scalar::all(255));
-    Edges.clear();
-    for (auto &&vertex : Vertices)
+    graph.Edges.clear();
+    for (auto &&vertex : graph.Vertices)
     {
         circle(canvas, vertex.p, radius, Scalar(0, 0, 0), FILLED);
     }
@@ -17,7 +17,10 @@ double DisplayEdges(const char *const WindowName, Mat &canvas, std::vector<Weigh
     double totalWeight = 0.0f;
     for (int i = 0; i < edges.size(); i++)
     {
-        waitKey(WaitTime < 0 ? 1 : WaitTime);
+        if (WaitTime >= 0)
+        {
+            waitKey(WaitTime);
+        }
         DisplaySingleEdge(WindowName, canvas, edges[i], offset);
         totalWeight += edges[i].GetWeight();
         imshow(WindowName, canvas);
