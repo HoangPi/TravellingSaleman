@@ -35,7 +35,7 @@ void ChristofidesSolve(Graph &graph)
 
     // Show canvas with fully connected vertices
     ConnectVertices(ChristofideseGraph);
-    display(ChristofideseGraph, 50, ChristofidesWindowName);
+    display(ChristofideseGraph, -1, ChristofidesWindowName);
     waitKey(0);
 
     // Show canvas with MST
@@ -44,12 +44,14 @@ void ChristofidesSolve(Graph &graph)
     waitKey(0);
 
     MakeEulerCircuit(ChristofideseGraph);
-    display(ChristofideseGraph, -1, ChristofidesWindowName);
+    display(ChristofideseGraph, 50, ChristofidesWindowName);
+
+    EulerTravel(ChristofideseGraph, graph);
 }
 
 void ConnectVertices(Graph &graph)
 {
-    graph.Edges.reserve((graph.Vertices.size() * (graph.Vertices.size() - 1)/2));
+    graph.Edges.reserve((graph.Vertices.size() * (graph.Vertices.size() - 1) / 2));
     for (size_t i = 0; i < graph.Vertices.size(); i++)
     {
         for (size_t j = i + 1; j < graph.Vertices.size(); j++)
@@ -98,7 +100,8 @@ void PrimMST(Graph &graph)
         }
         if (edge.Distance == -1)
         {
-            break;;
+            break;
+            ;
         }
         visited[candidateIndex] = true;
         simpleEdges.push_back(edge);
@@ -108,7 +111,6 @@ void PrimMST(Graph &graph)
     {
         graph.AddEdges(edge.v1, edge.v2);
     }
-    
 }
 
 bool HasVisited(const Vertex *VertexToCheck, const std::vector<bool> &Visited, const Vertex *Begin)
@@ -185,21 +187,105 @@ void MakeEulerCircuit(Graph &graph)
     }
 }
 
-void EulerTravel(std::vector<Vertex> &vertices, std::vector<WeightedUndirectedEdge> &edges, std::vector<WeightedUndirectedEdge> &path)
+auto addNode = [](std::vector<EulerNode> nodes, Vertex *v)
 {
-    std::vector<Vertex *> visited;
-    visited.reserve(vertices.size());
-    Vertex *current;
-    while (edges.size() > 0)
+    for (size_t i = 0; i < nodes.size(); i++)
     {
-        visited.push_back(current);
-        WeightedUndirectedEdge *shortestEdge = nullptr;
-        for (size_t i = 0; i < current->ConnectedEdges.size(); i++)
+        if (nodes[i].Node == v)
         {
-            if (!shortestEdge || shortestEdge->GetWeight() > current->ConnectedEdges[i]->GetWeight())
-            {
-                shortestEdge;
-            }
+            return;
         }
     }
+    nodes.push_back(v);
+};
+
+template <typename T>
+bool checkExist(std::vector<T *> &visited, T *edge)
+{
+    for (auto &&e : visited)
+    {
+        if (e == edge)
+            return true;
+    }
+    return false;
+};
+
+void EulerTravel(Graph &ChristofideGraph, Graph &Result)
+{
+    std::vector<EulerNode> path;
+    std::vector<WeightedUndirectedEdge *> visited;
+
+    path.reserve(ChristofideGraph.Edges.size());
+    visited.reserve(ChristofideGraph.Edges.size());
+
+    path.emplace_back(&ChristofideGraph.Vertices[0], 0);
+    while (path.size() <= ChristofideGraph.Edges.size())
+    {
+        int backTrackCount = 0;
+        EulerNode *current = &path.back();
+        int nextEdgeIndex = current->visited != -1 ? current->visited : 0;
+        while (true)
+        {
+            if (!checkExist<WeightedUndirectedEdge>(visited, current->Node->ConnectedEdges[nextEdgeIndex]))
+            {
+                break;
+            }
+            nextEdgeIndex++;
+            if (nextEdgeIndex >= current->Node->ConnectedEdges.size())
+            {
+
+                goto back_track;
+            }
+        }
+        current->visited = nextEdgeIndex;
+        path.emplace_back(
+            current->Node->ConnectedEdges[nextEdgeIndex]->v1 == current->Node
+                ? current->Node->ConnectedEdges[nextEdgeIndex]->v2
+                : current->Node->ConnectedEdges[nextEdgeIndex]->v1);
+        visited.push_back(current->Node->ConnectedEdges[nextEdgeIndex]);
+        continue;
+
+    back_track:
+        EulerNode *lastNode = &path.back();
+        lastNode->visited = -1;
+        while (true)
+        {
+            lastNode->visited++;
+            if (lastNode->visited >= lastNode->Node->ConnectedEdges.size())
+            {
+                backTrackCount++;
+                path.pop_back();
+                goto back_track;
+            }
+            if (!checkExist<WeightedUndirectedEdge>(visited, lastNode->Node->ConnectedEdges[lastNode->visited]))
+            {
+                break;
+            }
+        }
+        for (int i = 0; i < backTrackCount; i++)
+        {
+            visited.pop_back();
+        }
+        continue;
+    }
+    std::vector<Vertex *> UniqueVertices;
+    UniqueVertices.reserve(ChristofideGraph.Vertices.size());
+    for (size_t i = 0; i < path.size(); i++)
+    {
+        if (!checkExist<Vertex>(UniqueVertices, path[i].Node))
+        {
+            UniqueVertices.push_back(path[i].Node);
+        }
+    }
+    Result.Edges.reserve(Result.Vertices.size() + 2);
+    for (size_t i = 0; i < UniqueVertices.size() - 1; i++)
+    {
+        Result.AddEdges(
+            &Result.Vertices[FindIndex(UniqueVertices[i], &ChristofideGraph.Vertices[0])],
+            &Result.Vertices[FindIndex(UniqueVertices[i + 1], &ChristofideGraph.Vertices[0])]);
+    }
+    Result.AddEdges(
+        &Result.Vertices[FindIndex(UniqueVertices[0], &ChristofideGraph.Vertices[0])],
+        &Result.Vertices[FindIndex(UniqueVertices.back(), &ChristofideGraph.Vertices[0])]
+    );
 }
