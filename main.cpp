@@ -116,14 +116,14 @@ int main()
             DeleteEdge(graph, canvas, WindowName);
             Solve(graph, ESOLVE_TYPE::CRHISTOFIDES);
             double totalWeight = DisplayEdges(WindowName, canvas, graph.Edges, 100);
-            printf("Total weight is %lf\n", totalWeight);
+            printf("Christofides solve: %lf\n", totalWeight);
         }
         else if (key == TWO_BUTTON)
         {
             DeleteEdge(graph, canvas, WindowName);
             Solve(graph, ESOLVE_TYPE::NEAREST_NEIGBOR);
             double totalWeight = DisplayEdges(WindowName, canvas, graph.Edges, 100);
-            printf("Total weight is %lf\n", totalWeight);
+            printf("Nearest neigbor: %lf\n", totalWeight);
         }
     }
 
