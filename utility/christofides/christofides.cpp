@@ -2,7 +2,7 @@
 #include "../CanvasInteraction/CanvasInteraction.h"
 
 cv::Mat ChristofidesCanvas = cv::Mat(400, 600, CV_8UC3, cv::Scalar(255, 255, 255));
-const char *const ChristofidesWindowName = "Hello everyone, my name is Markplier";
+const char *const ChristofidesWindowName = "Christofides Window";
 
 auto hasvitedAll = [](std::vector<bool> &vectorToCheck)
 {

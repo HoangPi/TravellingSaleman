@@ -16,6 +16,8 @@ constexpr int DELETE = 0xff;
 constexpr int BACKSPACE = 0x08;
 constexpr int ESCAPE = 0x1b;
 constexpr int ZERO_BUTTON = 0x30;
+constexpr int ONE_BUTTON = 0x31;
+constexpr int TWO_BUTTON = 0x32;
 
 auto const WindowName = "White Screen";
 
@@ -109,11 +111,18 @@ int main()
         {
             DeleteEdge(graph, canvas, WindowName);
         }
-        else
+        else if (key == ONE_BUTTON)
+        {
+            DeleteEdge(graph, canvas, WindowName);
+            Solve(graph, ESOLVE_TYPE::CRHISTOFIDES);
+            double totalWeight = DisplayEdges(WindowName, canvas, graph.Edges, 100);
+            printf("Total weight is %lf\n", totalWeight);
+        }
+        else if (key == TWO_BUTTON)
         {
             DeleteEdge(graph, canvas, WindowName);
             Solve(graph, ESOLVE_TYPE::NEAREST_NEIGBOR);
-            double totalWeight = DisplayEdges(WindowName, canvas, graph.Edges, 10);
+            double totalWeight = DisplayEdges(WindowName, canvas, graph.Edges, 100);
             printf("Total weight is %lf\n", totalWeight);
         }
     }
