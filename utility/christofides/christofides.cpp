@@ -45,6 +45,7 @@ void ChristofidesSolve(Graph &graph)
 
     MakeEulerCircuit(ChristofideseGraph);
     display(ChristofideseGraph, 50, ChristofidesWindowName);
+    waitKey(0);
 
     EulerTravel(ChristofideseGraph, graph);
 }
