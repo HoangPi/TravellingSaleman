@@ -40,7 +40,7 @@ void ChristofidesSolve(Graph &graph)
 
     // Show canvas with MST
     PrimMST(ChristofideseGraph);
-    display(ChristofideseGraph, 200, ChristofidesWindowName);
+    display(ChristofideseGraph, 50, ChristofidesWindowName);
     waitKey(0);
 
     MakeEulerCircuit(ChristofideseGraph);
