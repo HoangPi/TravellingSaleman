@@ -7,7 +7,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Find Qt5 (Widgets module)
-find_package(Qt5 REQUIRED COMPONENTS Widgets)
+# find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
 # Find OpenCV
 find_package(OpenCV REQUIRED)
@@ -30,6 +30,6 @@ add_executable(${PROGRAM_NAME} ${SOURCES})
 
 # Link Qt and OpenCV libraries
 target_link_libraries(${PROGRAM_NAME}
-    Qt5::Widgets
+    # Qt5::Widgets
     ${OpenCV_LIBS}
 )
