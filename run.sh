@@ -2,6 +2,9 @@
 
 # Set image name
 IMAGE_NAME="travellingsaleman-traveling_salesman_problem"
+SERVICE_NAME="traveling_salesman_problem"
+DISPLAY=host.docker.internal:0.0
+export DISPLAY=:0
 
 # Check if image already exists
 if docker image inspect $IMAGE_NAME > /dev/null 2>&1; then

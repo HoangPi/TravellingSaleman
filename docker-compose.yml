@@ -4,6 +4,6 @@ services:
       context: .
       dockerfile: ./Dockerfile
     environment:
-      - DISPLAY=host.docker.internal:0.0
+      - DISPLAY=${DISPLAY}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
