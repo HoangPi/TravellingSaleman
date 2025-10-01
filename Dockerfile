@@ -12,6 +12,7 @@ RUN apt-get install -y \
     build-essential \
     cmake \
     git \
+    x11-xserver-utils \
     libgtk-3-dev \
     libopencv-dev
 
