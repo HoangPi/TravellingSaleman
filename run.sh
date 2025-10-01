@@ -37,9 +37,6 @@ fi
 echo "Running xhost +local:root..."
 xhost +local:root
 
-# Run the Docker container
-echo "Launching Docker container..."
-docker run -it \
-  --env DISPLAY=$DISPLAY \
-  --volume /tmp/.X11-unix:/tmp/.X11-unix \
-  $IMAGE_NAME
+# Run the Docker container using docker-compose
+echo "Launching Docker container via docker-compose..."
+docker-compose up --build $SERVICE_NAME
