@@ -1,0 +1,5 @@
+services:
+  traveling_salesman_problem:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
