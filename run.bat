@@ -46,6 +46,8 @@ IF %ERRORLEVEL% EQU 0 (
     )
 )
 
+set DISPLAY=host.docker.internal:0.0
+
 REM Build and run Docker Compose
 echo 🧱 Building and launching container via Docker Compose...
 docker compose up --build
