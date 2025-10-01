@@ -39,4 +39,4 @@ xhost +local:root
 
 # Run the Docker container using docker-compose
 echo "Launching Docker container via docker-compose..."
-docker-compose up --build $SERVICE_NAME
+docker compose up --build $SERVICE_NAME
