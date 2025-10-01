@@ -19,7 +19,7 @@ constexpr int ZERO_BUTTON = 0x30;
 constexpr int ONE_BUTTON = 0x31;
 constexpr int TWO_BUTTON = 0x32;
 
-auto const WindowName = "White Screen";
+auto const WindowName = "G7- Traveling Salesman Problem ";
 
 Mat canvas;
 int InteractiveVertexIndex = -1;
