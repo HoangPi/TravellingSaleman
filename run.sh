@@ -42,4 +42,4 @@ echo "Launching Docker container..."
 docker run -it \
   --env DISPLAY=$DISPLAY \
   --volume /tmp/.X11-unix:/tmp/.X11-unix \
-  travellingsaleman-traveling_salesman_problem
+  $IMAGE_NAME
