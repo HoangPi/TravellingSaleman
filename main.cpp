@@ -480,7 +480,7 @@ int main()
 
         putText(display, "Truong hop 2: Co vat can", Point(30, baseY + 4*lineHeight),
             FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0,0,150), 2, LINE_AA);
-        putText(display, "Nearest Neighbor (c): " + nnResultEdit + " / 2-opt: " + nn2OptResultEdit,
+        putText(display, "Nearest Neighbor (n): " + nnResultEdit + " / 2-opt: " + nn2OptResultEdit,
             Point(30, baseY + 5*lineHeight), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(0,0,0), 2, LINE_AA);
         putText(display, "Greedy (g): " + greedyResultEdit + " / 2-opt: " + greedy2OptResultEdit,
             Point(30, baseY + 6*lineHeight), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(0,0,0), 2, LINE_AA);
