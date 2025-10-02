@@ -1,5 +1,6 @@
 #include "christofides.h"
 #include "../CanvasInteraction/CanvasInteraction.h"
+#include "math.h"
 
 cv::Mat ChristofidesCanvas = cv::Mat(400, 600, CV_8UC3, cv::Scalar(255, 255, 255));
 const char *const ChristofidesWindowName = "Christofides Window";
@@ -162,7 +163,9 @@ void MakeEulerCircuit(Graph &graph)
                 }
                 double weight;
                 {
-                    weight = WeightedUndirectedEdge(OddDegreeVertices[i], OddDegreeVertices[j]).GetWeight();
+                    const double deltaX = OddDegreeVertices[i]->p.x - OddDegreeVertices[j]->p.x;
+                    const double deltaY = OddDegreeVertices[i]->p.y - OddDegreeVertices[j]->p.y;
+                    weight = std::sqrt((deltaX * deltaX) + (deltaY * deltaY));
                 }
                 if (!IsOverLap(OddDegreeVertices[i], OddDegreeVertices[j]))
                 {
@@ -181,7 +184,8 @@ void MakeEulerCircuit(Graph &graph)
         }
         if (simpleEdge.Distance == -1)
         {
-            continue;;
+            continue;
+            ;
         }
         std::vector<WeightedUndirectedEdge> fake;
         // display(fake, MST_Vertices, MST_Edges, -1, ChristofidesWindowName);
@@ -290,6 +294,5 @@ void EulerTravel(Graph &ChristofideGraph, Graph &Result)
     }
     Result.AddEdges(
         &Result.Vertices[FindIndex(UniqueVertices[0], &ChristofideGraph.Vertices[0])],
-        &Result.Vertices[FindIndex(UniqueVertices.back(), &ChristofideGraph.Vertices[0])]
-    );
+        &Result.Vertices[FindIndex(UniqueVertices.back(), &ChristofideGraph.Vertices[0])]);
 }
