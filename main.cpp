@@ -380,20 +380,22 @@ void DFS(const vector<vector<int>> &matrix, int u, int start, vector<int> &path,
 }
 
 // NearestNeighborBasic
-pair<vector<int>, double> NearestNeighborBasic(const vector<vector<int>> &matrix)
+void NearestNeighborBasic(const vector<vector<int>> &matrix, pair<vector<int>, double> &result)
 {
     int start = 0;
     int n = matrix.size();
     if (n < 3)
     {
-        return {{}, 0};
+        result = {{}, INF};
+        return;
     }
 
     // Gọi kiểm tra Hamilton sớm trước khi chạy
     if (!HasHamiltonCycle(matrix))
     {
         cout << "Do thi khong thoa hamilton Cycle." << endl;
-        return {{}, INF};
+        result = {{}, INF};
+        return;
     }
 
     vector<bool> visit(n, false); // đỉnh chưa thăm
@@ -418,7 +420,8 @@ pair<vector<int>, double> NearestNeighborBasic(const vector<vector<int>> &matrix
 
         if (next == -1)
         {
-            return {{}, INF};
+            result = {{}, INF};
+            return;
         }
 
         total += best;
@@ -429,14 +432,16 @@ pair<vector<int>, double> NearestNeighborBasic(const vector<vector<int>> &matrix
 
     if (matrix[u][start] >= INF)
     {
-        return {{}, INF};
+        result = {{}, INF};
+        return;
     }
 
     total += matrix[u][start];
     tour.push_back(start);
 
     cout << "Do dai cua Nearest Neighbor co ban la: " << total << endl;
-    return {tour, total};
+    result = {tour, total};
+    // return {tour, total};
 }
 
 // Áp dụng DFS vào NN
@@ -455,8 +460,9 @@ pair<vector<int>, double> NN_DFS(const vector<vector<int>> &mat, int start, doub
     }
 
     // Lấy tour NN làm điểm khởi đầu
-    auto [nnTour, nnLen] = NearestNeighborBasic(mat);
-    double upper = (nnTour.empty() ? INF : nnLen);
+    pair<vector<int>, double> result;
+    NearestNeighborBasic(mat, result);
+    double upper = (result.first.empty() ? INF : result.second);
 
     // cải thiện bằng DFS
     vector<int> bestTour;
@@ -468,13 +474,13 @@ pair<vector<int>, double> NN_DFS(const vector<vector<int>> &mat, int start, doub
     visit[start] = true;
     path.push_back(start);
 
-    DFS(mat, start, start, path, visit, 0, bestLen, bestTour);
+    // DFS(mat, start, start, path, visit, 0, bestLen, bestTour);
 
     // kết quả cuối
     if (bestTour.empty())
     {
         cout << "DFS khong tim thay hamilton cycle, tra ve ket qua cua NN truoc do" << endl;
-        return {nnTour, nnLen};
+        return {result.first, result.second};
     }
 
     cout << "Do dai tot nhat la = " << bestLen << endl;
